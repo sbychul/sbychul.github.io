@@ -140,8 +140,8 @@ function renderContent() {
   if (sidebar) {
     const { user } = PROFILE_DATA;
     sidebar.innerHTML = `
-      <div class="avatar-container">
-        <img id="avatar-img" class="profile-avatar" src="${user.avatar}" alt="${user.name}" crossorigin="anonymous" />
+      <div class="avatar-container" style="width:200px; height:200px;">
+        <img id="avatar-img" class="profile-avatar" src="${user.avatar}" alt="${user.name}" crossorigin="anonymous" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" />
         <div class="avatar-glow"></div>
       </div>
       <div class="profile-info">

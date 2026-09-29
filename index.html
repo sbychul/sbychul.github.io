@@ -13,18 +13,24 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=1.1" />
   </head>
   <body>
     <div class="layout-wrapper">
       <!-- 프로필 사이드바 (main.js에서 동적 렌더링) -->
       <aside class="sidebar content-box" id="profile-sidebar">
         <!-- Fallback 기본 프로필 -->
-        <div class="avatar-container">
+        <div class="avatar-container" style="width: 200px; height: 200px">
           <img
             class="profile-avatar"
             src="https://avatars.githubusercontent.com/u/131835031?v=4"
             alt="소병철"
+            style="
+              width: 100%;
+              height: 100%;
+              border-radius: 50%;
+              object-fit: cover;
+            "
           />
         </div>
         <div class="profile-info">
@@ -73,7 +79,7 @@
     </div>
 
     <!-- API 통신 모듈 및 메인 렌더링 스크립트 -->
-    <script src="api.js"></script>
-    <script src="main.js"></script>
+    <script src="api.js?v=1.1"></script>
+    <script src="main.js?v=1.1"></script>
   </body>
 </html>
