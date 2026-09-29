@@ -1,108 +1,79 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>소병철 | Profile</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>소병철 | Profile</title>
 
-  <!-- Google Sans Flex & Noto Sans KR -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400;6..144,600&family=Noto+Sans+KR:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Google Sans Flex & Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400;6..144,600&family=Noto+Sans+KR:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
 
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <div class="layout-wrapper">
-    <!-- 프로필 사이드바 -->
-    <aside class="sidebar content-box">
-      <!-- 깃허브 프로필사진을 그대로 따 옴 -->
-      <img src="https://avatars.githubusercontent.com/u/131835031?v=4" style="width:200px; height:200px; border-radius:50%;">
-      
-      <div class="profile-info">
-        <div class="name">소병철</div>
-        <hr>
-        <div class="birth">2004.04.27</div>
-        <div class="univ">인천대학교 컴퓨터공학부 전공</div>
-        <span class="sub">Incheon National Univ. Computer Science & Engineering</span>
-      </div>
-
-      <div class="sidebar-contact">
-        <a class="contact-link" href="mailto:iamsbc0427@gmail.com">
-          <img src="https://img.shields.io/badge/Gmail-EA4335?style=flat-square&logo=gmail&logoColor=white" alt="Gmail">
-        </a><br>
-        <a class="github-link" href="https://github.com/sbychul">
-          <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub">
-        </a>
-      </div>
-    </aside>
-
-    <!-- 오른쪽: 메인 콘텐츠 -->
-    <main class="main-content">
-      
-      <!-- Interested In -->
-      <section class="content-box">
-        <h3>🔍 Interested In</h3>
-        <ul>
-          <li>Game Clients / Engines</li>
-          <li>Backend Engineering / Development</li>
-          <li>Esports / Sports Data Engineering</li>
-        </ul>
-      </section>
-
-      <!-- Tech Stack -->
-      <section class="content-box">
-        <h3>🛠 Tech Stack</h3>
-        
-        <h4>🟢 Available</h4>
-        <h5>Languages</h5>
-        <div class="badge-group">
-          <img src="https://img.shields.io/badge/C-A8B9CC?style=flat-square&logo=c&logoColor=black" alt="C">
-          <img src="https://img.shields.io/badge/C++-00599C?style=flat-square&logo=cplusplus&logoColor=white" alt="C++">
-          <img src="https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java">
-          <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="layout-wrapper">
+      <!-- 프로필 사이드바 (main.js에서 동적 렌더링) -->
+      <aside class="sidebar content-box" id="profile-sidebar">
+        <!-- Fallback 기본 프로필 -->
+        <div class="avatar-container">
+          <img
+            class="profile-avatar"
+            src="https://avatars.githubusercontent.com/u/131835031?v=4"
+            alt="소병철"
+          />
         </div>
-
-        <h5>Tools & IDE</h5>
-        <div class="badge-group">
-          <img src="https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white" alt="Git">
-          <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub">
-          <img src="https://img.shields.io/badge/VS_Code-007ACC?style=flat-square&logo=visualstudiocode&logoColor=white" alt="VS Code">
-          <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000?style=flat-square&logo=intellijidea&logoColor=white" alt="IntelliJ IDEA">
+        <div class="profile-info">
+          <div class="name">소병철</div>
+          <hr class="profile-divider" />
+          <div class="birth">2004.04.27</div>
+          <div class="univ">인천대학교 컴퓨터공학부 전공</div>
+          <span class="sub"
+            >Incheon National Univ. Computer Science & Engineering</span
+          >
         </div>
+      </aside>
 
-        <h4>⏳ Learning in Progress</h4>
-        <div class="badge-group">
-          <img src="https://img.shields.io/badge/Kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white" alt="Kotlin">
-          <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript">
-          <img src="https://img.shields.io/badge/Android_Studio-3DDC84?style=flat-square&logo=androidstudio&logoColor=white" alt="Android Studio">
-        </div>
-      </section>
+      <!-- 오른쪽: 메인 콘텐츠 -->
+      <main class="main-content">
+        <!-- Interested In -->
+        <section class="content-box">
+          <h3>🔍 Interested In</h3>
+          <ul id="interests-list"></ul>
+        </section>
 
-      <!-- Featured Projects -->
-      <section class="content-box">
-        <h3>📌 Featured Projects</h3>
-        <ul>
-          <li>Work in progress</li>
-        </ul>
-      </section>
+        <!-- Tech Stack -->
+        <section class="content-box">
+          <h3>🛠 Tech Stack</h3>
+          <div id="tech-stack-content"></div>
+        </section>
 
-      <!-- Beyond Coding -->
-      <section class="content-box">
-        <h3>🎮 Beyond Coding</h3>
-        <ul>
-          <li>Gaming & Esports</li>
-          <li>Sports</li>
-            <ul>
-              <li>Football (Manchester City) <img src="https://thumb.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/1280px-Manchester_City_FC_badge.svg.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail" class="inline-icon" alt="Manchester City"></li>
-              <li>Formula 1 (McLaren)<img src="https://static.vecteezy.com/system/resources/previews/020/500/043/non_2x/mclaren-brand-logo-symbol-orange-design-british-car-automobile-illustration-free-vector.jpg" class="inline-icon" alt="McLaren"></li>
-        </ul>
-      </ul>
-      </section>
+        <!-- Featured Projects -->
+        <section class="content-box">
+          <h3>📌 Featured Projects</h3>
+          <div id="projects-content"></div>
+        </section>
 
-    </main>
-  </div>
+        <!-- GitHub Activity (잔디밭) -->
+        <section class="content-box">
+          <h3>🌱 GitHub Activity</h3>
+          <div id="github-activity-content"></div>
+        </section>
 
-</body>
+        <!-- Beyond Coding -->
+        <section class="content-box">
+          <h3>🎮 Beyond Coding</h3>
+          <ul id="beyond-coding-list"></ul>
+        </section>
+      </main>
+    </div>
+
+    <!-- API 통신 모듈 및 메인 렌더링 스크립트 -->
+    <script src="api.js"></script>
+    <script src="main.js"></script>
+  </body>
 </html>
