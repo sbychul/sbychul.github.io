@@ -72,6 +72,9 @@ const MESH_PALETTES = {
   dark: ["#ff5e00", "#c24a00", "#ff8000", "#7a2e00"],
 };
 
+// 흐름 각속도(rad/s). 반지름 8 궤도 기준 노이즈 공간 속도 0.14. 한 바퀴 약 6분
+const MESH_ANGULAR_SPEED = 0.0175;
+
 const VERT = `
 attribute vec2 p;
 void main() { gl_Position = vec4(p, 0.0, 1.0); }
@@ -84,7 +87,7 @@ precision highp float;
 precision mediump float;
 #endif
 uniform vec2 r;
-uniform float t;
+uniform float t; // 흐름 각도(라디안), JS에서 0~2π로 순환
 uniform vec3 c0, c1, c2, c3;
 
 // sin 없는 해시 (mediump에서 sin 해시는 사각형 아티팩트가 생김)
@@ -102,17 +105,20 @@ float n(vec2 p) {
 void main() {
   vec2 uv = gl_FragCoord.xy / r;               // y = 0 이 바닥
   vec2 p = vec2(uv.x * r.x / r.y * 0.35, uv.y);
-  float s = t * 0.14;
+
+  // 노이즈 공간에서 원을 그리며 흐름 (반지름 = 상대 속도). 직선으로 흐르면 시간이 지날수록
+  // 좌표가 커져 float 정밀도가 부족해지고 격자 경계가 끊긴 선으로 보임. 원 궤도는 좌표가 작게 유지되고 한 바퀴마다 이음매 없이 반복됨.
+  #define O(rad, ph) (rad * vec2(cos(t + ph), sin(t + ph)))
 
   // 파도 꼭대기 높이: 저주파 노이즈 두 겹이 서로 다른 속도로 흐름
-  float crest = 0.42 + 0.30 * n(vec2(p.x * 2.2 + s, s * 0.7))
-                     + 0.14 * n(vec2(p.x * 4.6 - s * 1.3, 3.0 + s));
+  float crest = 0.42 + 0.30 * n(vec2(p.x * 2.2, 0.0) + O(8.0, 0.0))
+                     + 0.14 * n(vec2(p.x * 4.6, 3.0) - O(10.4, 2.0));
   float a = smoothstep(crest + 0.18, crest - 0.32, uv.y);
 
   // 도메인 워핑으로 색을 액체처럼 섞음
-  vec2 q = vec2(n(p * 3.0 + s), n(p * 3.0 - s + 5.0));
-  vec3 col = mix(c0, c1, smoothstep(0.25, 0.85, n(p * 2.4 + q * 1.6 + s * 0.5)));
-  col = mix(col, c2, smoothstep(0.45, 0.95, n(p * 3.6 - q + s)));
+  vec2 q = vec2(n(p * 3.0 + O(8.0, 4.0)), n(p * 3.0 + 5.0 - O(8.0, 1.0)));
+  vec3 col = mix(c0, c1, smoothstep(0.25, 0.85, n(p * 2.4 + q * 1.6 + O(4.0, 3.0))));
+  col = mix(col, c2, smoothstep(0.45, 0.95, n(p * 3.6 - q + O(8.0, 5.0))));
   col = mix(col, c3, smoothstep(0.35, 1.0, uv.y / crest) * 0.7);
 
   gl_FragColor = vec4(col * a, a);             // premultiplied alpha
@@ -161,7 +167,7 @@ function initMesh(canvas, dark, reducedMotion) {
   };
 
   const draw = (ms) => {
-    gl.uniform1f(u("t"), ms / 1000);
+    gl.uniform1f(u("t"), ((ms / 1000) * MESH_ANGULAR_SPEED) % (2 * Math.PI));
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
 

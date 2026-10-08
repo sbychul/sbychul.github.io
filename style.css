@@ -155,11 +155,13 @@ dt {
   margin-right: 6px;
 }
 
-.nav-links a:hover,
-.menu a:hover,
-.nav-links a[aria-current],
+/* 현재 보고 있는 섹션 */
+.nav-links a[aria-current] {
+  color: var(--accent-text); /* 12px 작은 글씨라 대비 확보용 진한 오렌지 */
+}
+
 .menu a[aria-current] {
-  color: var(--accent-text);
+  color: var(--accent);
 }
 
 .menu-button {
@@ -507,14 +509,6 @@ dd {
   grid-area: chips;
 }
 
-.project:hover .project-title {
-  color: var(--accent-text);
-}
-
-.project:hover .project-link {
-  transform: translate(3px, -3px);
-}
-
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -530,10 +524,6 @@ dd {
 .chips a {
   display: block;
   padding: 8px 14px;
-}
-
-.chips a:hover {
-  color: var(--accent-text);
 }
 
 /* 04 Stack */
@@ -683,10 +673,6 @@ figcaption,
   vertical-align: 1px;
 }
 
-.log a:hover code {
-  color: var(--accent-text);
-}
-
 /* ===== 06 Contact ===== */
 html:not(.js) .contact {
   padding-bottom: 300px;
@@ -720,10 +706,6 @@ html:not(.js) .contact {
   text-decoration-thickness: 1px;
 }
 
-.email:hover {
-  color: var(--accent-text);
-}
-
 /* LinkedIn 등 href가 비어 있는 링크는 숨김 */
 .links li:has(a[href=""]) {
   display: none;
@@ -738,6 +720,27 @@ html:not(.js) .contact {
   display: flex;
   justify-content: space-between;
   gap: 16px;
+}
+
+/* ===== Hover =====
+   마우스가 있는 기기에서만 적용. 터치 기기는 탭한 뒤 호버 상태가 남아
+   외부 링크에서 돌아왔을 때 색이 바뀐 채로 보이는 문제가 있음. */
+@media (hover: hover) {
+  .nav-links a:hover,
+  .chips a:hover,
+  .email:hover,
+  .project:hover .project-title,
+  .log a:hover code {
+    color: var(--accent-text);
+  }
+
+  .menu a:hover {
+    color: var(--accent);
+  }
+
+  .project:hover .project-link {
+    transform: translate(3px, -3px);
+  }
 }
 
 /* ===== Motion ===== */
