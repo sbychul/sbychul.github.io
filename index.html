@@ -1,85 +1,244 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>소병철 | Profile</title>
+    <title>Byoungchul So</title>
+    <meta
+      name="description"
+      content="Byoungchul So — a CS student at Incheon National University, drawn to games, servers, and sports data."
+    />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0c0c0c" media="(prefers-color-scheme: dark)" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6' fill='%23FF8000'/%3E%3C/svg%3E"
+    />
 
-    <!-- Google Sans Flex & Noto Sans KR -->
+    <!-- JS가 켜져 있을 때만 장면 전환 레이아웃 적용 (꺼져 있으면 일반 스크롤 페이지) -->
+    <script>document.documentElement.classList.add("js");</script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400;6..144,600&family=Noto+Sans+KR:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-
-    <link rel="stylesheet" href="style.css?v=1.1" />
+    <link rel="stylesheet" href="style.css?v=3.0" />
   </head>
   <body>
-    <div class="layout-wrapper">
-      <!-- 프로필 사이드바 (main.js에서 동적 렌더링) -->
-      <aside class="sidebar content-box" id="profile-sidebar">
-        <!-- Fallback 기본 프로필 -->
-        <div class="avatar-container" style="width: 200px; height: 200px">
-          <img
-            class="profile-avatar"
-            src="https://avatars.githubusercontent.com/u/131835031?v=4"
-            alt="소병철"
-            style="
-              width: 100%;
-              height: 100%;
-              border-radius: 50%;
-              object-fit: cover;
-            "
-          />
-        </div>
-        <div class="profile-info">
-          <div class="name">소병철</div>
-          <hr class="profile-divider" />
-          <div class="birth">2004.04.27</div>
-          <div class="univ">인천대학교 컴퓨터공학부 전공</div>
-          <span class="sub"
-            >Incheon National Univ. Computer Science & Engineering</span
-          >
-        </div>
-      </aside>
+    <nav class="nav wrap" aria-label="Primary">
+      <a class="brand" href="#top">Byoungchul So</a>
+      <ul class="nav-links">
+        <li><a href="#about"><span>01</span>About</a></li>
+        <li><a href="#now"><span>02</span>Now</a></li>
+        <li><a href="#projects"><span>03</span>Projects</a></li>
+        <li><a href="#stack"><span>04</span>Stack</a></li>
+        <li><a href="#practice"><span>05</span>Practice</a></li>
+        <li><a href="#contact"><span>06</span>Contact</a></li>
+      </ul>
+      <button class="menu-button" popovertarget="menu" aria-label="Open menu">
+        Menu<span class="bars" aria-hidden="true"></span>
+      </button>
+    </nav>
 
-      <!-- 오른쪽: 메인 콘텐츠 -->
-      <main class="main-content">
-        <!-- Interested In -->
-        <section class="content-box">
-          <h3>🔍 Interested In</h3>
-          <ul id="interests-list"></ul>
-        </section>
-
-        <!-- Tech Stack -->
-        <section class="content-box">
-          <h3>🛠 Tech Stack</h3>
-          <div id="tech-stack-content"></div>
-        </section>
-
-        <!-- Featured Projects -->
-        <section class="content-box">
-          <h3>📌 Featured Projects</h3>
-          <div id="projects-content"></div>
-        </section>
-
-        <!-- GitHub Activity (잔디밭) -->
-        <section class="content-box">
-          <h3>🌱 GitHub Activity</h3>
-          <div id="github-activity-content"></div>
-        </section>
-
-        <!-- Beyond Coding -->
-        <section class="content-box">
-          <h3>🎮 Beyond Coding</h3>
-          <ul id="beyond-coding-list"></ul>
-        </section>
-      </main>
+    <div id="menu" class="menu" popover>
+      <button class="menu-close" popovertarget="menu" popovertargetaction="hide">Close</button>
+      <ul>
+        <li><a href="#about"><span>01</span>About</a></li>
+        <li><a href="#now"><span>02</span>Now</a></li>
+        <li><a href="#projects"><span>03</span>Projects</a></li>
+        <li><a href="#stack"><span>04</span>Stack</a></li>
+        <li><a href="#practice"><span>05</span>Practice</a></li>
+        <li><a href="#contact"><span>06</span>Contact</a></li>
+      </ul>
     </div>
 
-    <!-- API 통신 모듈 및 메인 렌더링 스크립트 -->
-    <script src="api.js?v=1.1"></script>
-    <script src="main.js?v=1.1"></script>
+    <!--
+      장면 구조: .scene = 화면 높이만큼의 스크롤 구간, .scene-inner = 화면에 고정된 실제 내용.
+      스크롤 위치에 따라 main.js가 .scene-inner를 페이드 인/아웃.
+    -->
+
+    <!-- 00 Hero -->
+    <header id="top" class="scene hero">
+      <div class="scene-inner">
+        <div class="hero-copy wrap">
+          <p class="status">
+            <span class="dot" aria-hidden="true"></span>
+            Open to internships · Incheon, KR · <time id="clock">--:--</time> KST
+          </p>
+          <h1 class="name">Byoungchul<br /><span>So.</span></h1>
+          <p class="tagline">A CS student in the making, drawn to games, servers, and sports data.</p>
+        </div>
+        <a class="scroll-cue wrap" href="#about">Scroll ↓</a>
+      </div>
+    </header>
+
+    <main>
+      <!-- 01 About -->
+      <section id="about" class="scene">
+        <div class="scene-inner">
+          <div class="section wrap">
+            <h2 class="label"><span>01</span>About</h2>
+            <div class="content">
+              <p class="lead">
+                I'm a second-year Computer Science student at Incheon National University, back on
+                campus after my military service. Still early in the journey — and I like it that way:
+                building small things, breaking them, and learning how the pieces behind games and
+                servers fit together.
+              </p>
+              <dl class="meta">
+                <div><dt>Based in</dt><dd>Incheon, KR</dd></div>
+                <div><dt>Study</dt><dd>Computer Science &amp; Engineering, INU</dd></div>
+                <div><dt>Year</dt><dd>2nd year · 2nd semester</dd></div>
+                <div><dt>Age</dt><dd>22</dd></div>
+                <div><dt>Military service</dt><dd>2024–25 · Sergeant</dd></div>
+                <div><dt>Club</dt><dd>INU App Center</dd></div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 Now -->
+      <section id="now" class="scene">
+        <div class="scene-inner">
+          <div class="section wrap">
+            <h2 class="label"><span>02</span>Now</h2>
+            <div class="content">
+              <ul class="now-list">
+                <li>
+                  <p>Learning how team projects actually run — the process, the roles, the reviews.</p>
+                  <span class="tag">INU App Center</span>
+                </li>
+                <li>
+                  <p>Teaching myself to build and review software with AI agents.</p>
+                  <span class="tag">Self-study</span>
+                </li>
+              </ul>
+              <p class="note">Last updated — Oct 2026</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 Projects -->
+      <section id="projects" class="scene">
+        <div class="scene-inner">
+          <div class="section wrap">
+            <h2 class="label"><span>03</span>Projects</h2>
+            <div class="content">
+              <ul class="projects">
+                <li>
+                  <a class="project" href="https://github.com/sbychul/notion-dday-widget" target="_blank" rel="noopener noreferrer">
+                    <span class="project-num">01</span>
+                    <h3 class="project-title">Notion D-day Widget</h3>
+                    <span class="project-link">GitHub ↗</span>
+                    <p class="project-desc">A D-day countdown widget for Notion, backed by a Notion database.</p>
+                    <ul class="chips"><li>TypeScript</li><li>Notion</li></ul>
+                  </a>
+                </li>
+                <li>
+                  <a class="project" href="https://github.com/sbychul/26-1_DS_Assignment" target="_blank" rel="noopener noreferrer">
+                    <span class="project-num">02</span>
+                    <h3 class="project-title">Battle Simulator</h3>
+                    <span class="project-link">GitHub ↗</span>
+                    <p class="project-desc">An Overwatch-inspired combat simulator built on a dynamically weighted graph.</p>
+                    <ul class="chips"><li>Java</li><li>Graphs</li><li>Data Structures</li></ul>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 Stack -->
+      <section id="stack" class="scene">
+        <div class="scene-inner">
+          <div class="section wrap">
+            <h2 class="label"><span>04</span>Stack</h2>
+            <div class="content stack">
+              <div>
+                <h3 class="sub">Languages</h3>
+                <ul><li>C</li><li>C++</li><li>Java</li><li>Python</li></ul>
+              </div>
+              <div>
+                <h3 class="sub">Tools</h3>
+                <ul>
+                  <li>Git</li><li>GitHub</li><li>VS Code</li><li>IntelliJ IDEA</li>
+                  <li>Claude Code</li><li>Antigravity</li>
+                </ul>
+              </div>
+              <div class="learning">
+                <h3 class="sub">Learning — in progress</h3>
+                <ul><li>Kotlin</li><li>JavaScript</li><li>Android Studio</li></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 Practice -->
+      <section id="practice" class="scene">
+        <div class="scene-inner">
+          <div class="section wrap">
+            <h2 class="label"><span>05</span>Practice</h2>
+            <div class="content">
+              <p class="heading">Small commits, most days.</p>
+
+              <figure class="contrib">
+                <figcaption id="contrib-caption">Contributions · last 12 months</figcaption>
+                <div class="contrib-scroll">
+                  <a id="contrib-graph" class="contrib-graph" href="https://github.com/sbychul" target="_blank" rel="noopener noreferrer" aria-label="GitHub contributions over the last year"></a>
+                </div>
+                <div class="contrib-foot">
+                  <span class="swipe-hint">← Swipe for full year</span>
+                  <span class="legend" aria-hidden="true">Less <i data-l="0"></i><i data-l="1"></i><i data-l="2"></i><i data-l="3"></i><i data-l="4"></i> More</span>
+                </div>
+              </figure>
+
+              <div class="log">
+                <h3 class="sub">Learning log</h3>
+                <ul>
+                  <li><a href="https://github.com/sbychul/TIL_Kotlin" target="_blank" rel="noopener noreferrer"><code>TIL_Kotlin</code><span class="log-desc">Kotlin — mobile software, Fall 2026</span><span class="log-status on">Ongoing</span></a></li>
+                  <li><a href="https://github.com/sbychul/TIL_Cpp" target="_blank" rel="noopener noreferrer"><code>TIL_Cpp</code><span class="log-desc">C++ — Fall 2026 coursework</span><span class="log-status on">Ongoing</span></a></li>
+                  <li><a href="https://github.com/sbychul/Daily_Python" target="_blank" rel="noopener noreferrer"><code>Daily_Python</code><span class="log-desc">Python &amp; matplotlib</span><span class="log-status">Completed</span></a></li>
+                  <li><a href="https://github.com/sbychul/Daily_Java" target="_blank" rel="noopener noreferrer"><code>Daily_Java</code><span class="log-desc">Java fundamentals</span><span class="log-status">Completed</span></a></li>
+                  <li><a href="https://github.com/sbychul/Daily_C" target="_blank" rel="noopener noreferrer"><code>Daily_C</code><span class="log-desc">C fundamentals &amp; data structures</span><span class="log-status">Completed</span></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 Contact -->
+      <section id="contact" class="scene contact">
+        <div class="scene-inner">
+          <div class="section wrap">
+            <h2 class="label"><span>06</span>Contact</h2>
+            <div class="content">
+              <p class="contact-heading">Let's build<br /><span>something.</span></p>
+              <a class="email" href="mailto:iamsbc0427@gmail.com">iamsbc0427@gmail.com ↗</a>
+              <ul class="chips links">
+                <li><a href="https://github.com/sbychul" target="_blank" rel="noopener noreferrer">GitHub ↗</a></li>
+                <!-- LinkedIn: href를 채우면 자동 표시 (비어 있으면 CSS로 숨김) -->
+                <li><a href="https://www.linkedin.com/in/byoungchul-so-500467442" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+              </ul>
+            </div>
+          </div>
+          <footer class="footer wrap">
+            <p>Off-screen: esports, Man City, McLaren — hence the papaya.</p>
+            <p>© 2026 Byoungchul So</p>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <!-- 화면 하단 고정 파도 (Hero·Contact에서 원래 밝기, 나머지는 흐리게) -->
+    <canvas class="mesh" aria-hidden="true"></canvas>
+
+    <script src="main.js?v=3.2"></script>
   </body>
 </html>
