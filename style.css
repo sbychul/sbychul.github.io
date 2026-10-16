@@ -509,6 +509,11 @@ dd {
   grid-area: chips;
 }
 
+.projects + .note {
+  justify-self: end;
+  margin-top: -24px;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -827,7 +832,6 @@ html:not(.js) .contact {
   .project .chips li { padding: 7px 12px; }
 
   .stack { grid-template-columns: repeat(2, 1fr); gap: 32px 0; }
-  .learning { grid-column: 1 / -1; }
   .stack ul { gap: 10px; }
 
   .swipe-hint { display: inline; }
