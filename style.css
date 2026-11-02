@@ -5,7 +5,7 @@
   --line: #e9e6e1;
   --accent: #ff8000;
   --accent-text: #b85400; /* 흰 배경 위 작은 글씨용 (대비 확보) */
-  --accent-strong: #e66f00; /* 흰 배경 위 큰 글씨·포커스 링용 (3:1 확보) */
+  --accent-strong: #f27900; /* 흰 배경 위 큰 글씨용 (--accent보다 약간 진하게, 2.8:1) */
   --on-mesh: var(--fg); /* 밝은 파도 위 글씨 */
   --g0: #f1eeea;
   --g1: #ffe0bf;
@@ -20,7 +20,8 @@
   --label-col: 280px;
 }
 
-@media (prefers-color-scheme: dark) {
+/* screen 한정: 인쇄는 다크 모드여도 흰 종이에 맞는 라이트 색 사용 */
+@media screen and (prefers-color-scheme: dark) {
   :root {
     --bg: #0c0c0c;
     --fg: #f4f1ec;
@@ -71,7 +72,7 @@ ul {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent-strong);
+  outline: 2px solid var(--accent-text);
   outline-offset: 3px;
 }
 
@@ -91,7 +92,7 @@ dt,
 .menu-button,
 .scroll-cue,
 .project-num,
-.project-link,
+.project-links,
 .chips,
 figcaption,
 .contrib-foot,
@@ -322,7 +323,7 @@ dt {
   width: 100%;
   height: clamp(260px, 40svh, 380px);
   pointer-events: none;
-  opacity: 0.25; /* 본문 섹션에서는 가독성을 위해 흐리게 */
+  opacity: 0.4; /* 본문 섹션에서는 가독성을 위해 흐리게 */
   transition: opacity 0.8s ease;
   background:
     radial-gradient(50% 70% at 20% 100%, #ff8000cc, transparent),
@@ -485,6 +486,7 @@ dd {
 }
 
 .project {
+  position: relative;
   display: grid;
   grid-template-columns: auto 1fr auto;
   grid-template-areas:
@@ -496,6 +498,11 @@ dd {
   padding-block: 40px;
 }
 
+/* 장면 모드: 3개가 1440x900 한 화면에 들어가도록 압축 */
+.js .project {
+  padding-block: 24px;
+}
+
 .project-num {
   grid-area: num;
   font-size: 13px;
@@ -503,16 +510,36 @@ dd {
 
 .project-title {
   grid-area: title;
-  font-size: clamp(34px, 3.5vw, 50px);
+  font-size: clamp(30px, 3vw, 44px);
   font-weight: 500;
   line-height: 1.1;
   letter-spacing: -0.03em;
   transition: color 0.2s ease;
 }
 
-.project-link {
+.project-links {
   grid-area: link;
+  display: grid;
+  justify-items: end;
+  gap: 6px;
   font-size: 13px;
+}
+
+/* 카드 전체를 GitHub 링크로. Live 링크를 안에 두려고 <a>로 감싸지 않음 */
+.project-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.project-live {
+  position: relative; /* 카드 전체 링크 위로 올림 */
+  transition: transform 0.2s ease;
+}
+
+/* transform은 .project-cover에 주면 ::after의 기준이 바뀌므로 안쪽 span에 줌 */
+.project-link {
+  display: inline-block;
   transition: transform 0.2s ease;
 }
 
@@ -775,6 +802,8 @@ html:not(.js) .contact {
   .chips a:hover,
   .email:hover,
   .project:hover .project-title,
+  .project-cover:hover,
+  .project-live:hover,
   .log a:hover code {
     color: var(--accent-text);
   }
@@ -783,7 +812,8 @@ html:not(.js) .contact {
     color: var(--accent-strong);
   }
 
-  .project:hover .project-link {
+  .project:hover .project-link,
+  .project:hover .project-live {
     transform: translate(3px, -3px);
   }
 }
@@ -848,7 +878,7 @@ html:not(.js) .contact {
     margin: 0 10px 0 0;
   }
 
-  .label, .sub, dt, .tag, .note, .project-num, .project-link, .chips, figcaption, .log-status, .footer {
+  .label, .sub, dt, .tag, .note, .project-num, .project-links, .chips, figcaption, .log-status, .footer {
     font-size: 11px;
   }
 
@@ -898,6 +928,7 @@ html:not(.js) .contact {
   .js .scene-inner { padding-block: 84px 40px; }
   .js .section { row-gap: 24px; }
   .js .section .content { gap: 32px; }
+  .js .project { padding-block: 20px; }
   .js .contact .scene-inner { padding-bottom: 24px; }
 
   .footer {
@@ -905,5 +936,61 @@ html:not(.js) .contact {
     gap: 6px;
     bottom: 24px;
     line-height: 1.5;
+  }
+}
+
+/* ===== Print =====
+   장면 레이아웃을 풀어 전 섹션을 차례로 인쇄. main.js가 인라인으로 넣는 opacity/transform을 덮어씀 */
+@media print {
+  .nav,
+  .mesh,
+  .scroll-cue,
+  .swipe-hint {
+    display: none;
+  }
+
+  html.js {
+    scroll-snap-type: none;
+  }
+
+  .js .scene {
+    height: auto;
+    break-inside: avoid;
+  }
+
+  .js .scene-inner {
+    position: static;
+    padding-block: 24px;
+    overflow: visible;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .hero,
+  .hero .scene-inner {
+    min-height: 0;
+  }
+
+  .hero-copy {
+    margin-top: 0;
+  }
+
+  .hero-copy > * {
+    animation: none;
+  }
+
+  /* 종이 폭을 넘는 그래프는 최신 주가 남도록 오른쪽 기준으로 자름 */
+  .contrib-scroll {
+    overflow: hidden;
+    direction: rtl;
+  }
+
+  .contrib-graph {
+    direction: ltr;
+  }
+
+  .contrib-graph i,
+  .legend i {
+    print-color-adjust: exact;
   }
 }
