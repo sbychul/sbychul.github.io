@@ -28,6 +28,13 @@ function initMenu() {
   menu.addEventListener("click", (e) => {
     if (e.target.closest("a")) menu.hidePopover();
   });
+
+  // 메뉴가 열린 동안 뒤쪽으로 Tab 포커스가 빠져나가지 않게 함
+  // (.menu-button은 제외: toggle이 비동기라 닫을 때 포커스가 돌아오지 못함)
+  const behind = document.querySelectorAll(".scene, .brand");
+  menu.addEventListener("toggle", (e) => {
+    behind.forEach((el) => (el.inert = e.newState === "open"));
+  });
 }
 
 // 3. 기여 그래프
@@ -37,20 +44,23 @@ async function loadContributions() {
   try {
     const res = await fetch(
       `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`,
+      { signal: AbortSignal.timeout?.(8000) },
     );
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const { total, contributions } = await res.json();
 
     // 첫 날짜의 요일만큼 빈 칸을 채워 일요일 시작 7행 그리드에 맞춤
     const pad = new Date(contributions[0].date).getUTCDay();
-    graph.innerHTML =
-      "<i></i>".repeat(pad) +
-      contributions
-        .map(
-          (d) =>
-            `<i data-l="${d.level}" title="${d.count} contributions on ${d.date}"></i>`,
-        )
-        .join("");
+    // 외부 API 응답이므로 innerHTML을 쓰지 않음
+    graph.replaceChildren(
+      ...Array.from({ length: pad }, () => document.createElement("i")),
+      ...contributions.map((d) => {
+        const cell = document.createElement("i");
+        cell.dataset.l = d.level;
+        cell.title = `${d.count} contribution${d.count === 1 ? "" : "s"} on ${d.date}`;
+        return cell;
+      }),
+    );
 
     if (total?.lastYear != null) {
       caption.textContent = `${total.lastYear.toLocaleString("en-US")} contributions · last 12 months`;
@@ -61,7 +71,9 @@ async function loadContributions() {
     scroller.scrollLeft = scroller.scrollWidth;
   } catch (err) {
     console.warn("[contributions] 로드 실패:", err);
+    graph.style.display = "block"; // 12px 열 그리드에 넣으면 문구가 단어마다 쪼개짐
     graph.textContent = "View contributions on GitHub ↗";
+    document.querySelector(".swipe-hint")?.remove();
   }
 }
 
@@ -173,34 +185,41 @@ function initMesh(canvas, dark, reducedMotion) {
 
   let visible = false;
   let raf = 0;
-  const loop = (ms) => {
-    draw(ms);
-    raf = visible ? requestAnimationFrame(loop) : 0;
+  const redraw = () => draw(reducedMotion.matches ? 12000 : performance.now());
+
+  // 화면에 보이고 동작 줄이기가 꺼져 있고 컨텍스트가 살아 있을 때만 애니메이션
+  const animating = () => visible && !reducedMotion.matches && !gl.isContextLost();
+  const loop = () => {
+    redraw();
+    raf = animating() ? requestAnimationFrame(loop) : 0;
   };
-  const redrawStill = () => draw(12000);
+  const sync = () => {
+    redraw();
+    if (animating() && !raf) raf = requestAnimationFrame(loop);
+  };
 
   resize();
   canvas.classList.add("gl");
 
-  if (reducedMotion.matches) {
-    redrawStill();
-  } else {
-    // 화면에 보일 때만 애니메이션
-    new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      if (visible && !raf) raf = requestAnimationFrame(loop);
-    }).observe(canvas);
-  }
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    sync();
+  }).observe(canvas);
+  reducedMotion.addEventListener("change", sync);
 
+  // canvas.width 대입이 버퍼를 비우므로 같은 프레임에 다시 그림
   new ResizeObserver(() => {
     resize();
-    if (reducedMotion.matches) redrawStill();
+    redraw();
   }).observe(canvas);
 
   dark.addEventListener("change", (e) => {
     setPalette(e.matches);
-    if (reducedMotion.matches) redrawStill();
+    redraw();
   });
+
+  // 컨텍스트를 잃으면 CSS 그라데이션 폴백으로 복귀
+  canvas.addEventListener("webglcontextlost", () => canvas.classList.remove("gl"));
 }
 
 // 5. 장면 전환
@@ -226,7 +245,7 @@ function initScenes() {
   let raf = 0;
 
   const scrollProgress = () => {
-    const y = scrollY;
+    const y = Math.max(0, scrollY); // iOS 고무줄 스크롤은 음수가 됨
     const tops = scenes.map((s) => s.offsetTop);
     let i = 0;
     while (i < last && y >= tops[i + 1]) i++;
@@ -292,10 +311,10 @@ function initScenes() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  initScenes(); // 맨 앞: 뒤에서 예외가 나도 장면은 보이게 함
   startClock();
   initMenu();
   loadContributions();
-  initScenes();
 
   const dark = matchMedia("(prefers-color-scheme: dark)");
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");

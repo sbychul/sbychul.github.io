@@ -5,6 +5,8 @@
   --line: #e9e6e1;
   --accent: #ff8000;
   --accent-text: #b85400; /* 흰 배경 위 작은 글씨용 (대비 확보) */
+  --accent-strong: #e66f00; /* 흰 배경 위 큰 글씨·포커스 링용 (3:1 확보) */
+  --on-mesh: var(--fg); /* 밝은 파도 위 글씨 */
   --g0: #f1eeea;
   --g1: #ffe0bf;
   --g2: #ffb366;
@@ -25,6 +27,7 @@
     --muted: #8f8a84;
     --line: #252422;
     --accent-text: #ff9a3c;
+    --accent-strong: #ff8000;
     --g0: #1b1a19;
     --g1: #4a2a10;
     --g2: #8a4310;
@@ -68,7 +71,7 @@ ul {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--accent-strong);
   outline-offset: 3px;
 }
 
@@ -139,6 +142,8 @@ dt {
   top: 0;
   left: 0;
   right: 0;
+  padding-bottom: 16px;
+  background: var(--bg); /* 넘치는 장면을 스크롤할 때 본문이 비치지 않게 함 */
 }
 
 .brand {
@@ -161,7 +166,7 @@ dt {
 }
 
 .menu a[aria-current] {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 
 .menu-button {
@@ -295,7 +300,7 @@ dt {
 
 .name span,
 .contact-heading span {
-  color: var(--accent);
+  color: var(--accent-strong);
 }
 
 .tagline {
@@ -317,12 +322,26 @@ dt {
   width: 100%;
   height: clamp(260px, 40svh, 380px);
   pointer-events: none;
-  opacity: 0.4; /* 본문 섹션에서는 가독성을 위해 흐리게 */
+  opacity: 0.25; /* 본문 섹션에서는 가독성을 위해 흐리게 */
   transition: opacity 0.8s ease;
   background:
     radial-gradient(50% 70% at 20% 100%, #ff8000cc, transparent),
     radial-gradient(45% 80% at 75% 100%, #ff6b00cc, transparent),
     radial-gradient(70% 50% at 50% 100%, #ffd3a1aa, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  .mesh {
+    background:
+      radial-gradient(50% 70% at 20% 100%, #ff5e00cc, transparent),
+      radial-gradient(45% 80% at 75% 100%, #c24a00cc, transparent),
+      radial-gradient(70% 50% at 50% 100%, #7a2e00aa, transparent);
+  }
+
+  /* 진한 WebGL 파도 위에서만 어두운 글씨. CSS 폴백은 어두워서 --fg 유지 */
+  :root:has(.mesh.gl) {
+    --on-mesh: #0c0c0c;
+  }
 }
 
 .mesh.bright {
@@ -602,6 +621,11 @@ figcaption,
   background: var(--g0);
 }
 
+/* 첫 주를 일요일에 맞추는 빈 칸. 기여 0인 날처럼 보이면 안 됨 */
+.contrib-graph i:not([data-l]) {
+  visibility: hidden;
+}
+
 .legend i {
   display: inline-block;
   width: 10px;
@@ -688,7 +712,11 @@ html:not(.js) .contact {
 }
 
 .js .contact .scene-inner {
-  padding-bottom: 160px; /* 푸터 자리 */
+  padding-bottom: 40px;
+}
+
+.js .contact .section {
+  margin-block: auto; /* 푸터를 뺀 공간에서 가운데 정렬 */
 }
 
 .contact .content {
@@ -727,6 +755,18 @@ html:not(.js) .contact {
   gap: 16px;
 }
 
+/* 장면 모드: 문서 흐름에 넣어 내용이 넘쳐도 링크를 덮지 않게 함 */
+.js .footer {
+  position: static;
+  margin-top: 32px;
+}
+
+/* Hero · Contact에서 파도 위에 놓이는 글씨 */
+.js .footer,
+.js .scroll-cue {
+  color: var(--on-mesh);
+}
+
 /* ===== Hover =====
    마우스가 있는 기기에서만 적용. 터치 기기는 탭한 뒤 호버 상태가 남아
    외부 링크에서 돌아왔을 때 색이 바뀐 채로 보이는 문제가 있음. */
@@ -740,7 +780,7 @@ html:not(.js) .contact {
   }
 
   .menu a:hover {
-    color: var(--accent);
+    color: var(--accent-strong);
   }
 
   .project:hover .project-link {
@@ -770,6 +810,13 @@ html:not(.js) .contact {
   .dot { animation: none; }
   .menu, .menu::backdrop { transition: none; }
   .menu:popover-open li { animation: none; }
+}
+
+/* ===== Tablet =====
+   라벨 열이 그대로면 본문이 좁아져 Learning log가 가로로 넘침 */
+@media (max-width: 1024px) {
+  :root { --label-col: 160px; }
+  .section { column-gap: 40px; }
 }
 
 /* ===== Mobile ===== */
@@ -851,7 +898,7 @@ html:not(.js) .contact {
   .js .scene-inner { padding-block: 84px 40px; }
   .js .section { row-gap: 24px; }
   .js .section .content { gap: 32px; }
-  .js .contact .scene-inner { padding-bottom: 120px; }
+  .js .contact .scene-inner { padding-bottom: 24px; }
 
   .footer {
     flex-direction: column;
