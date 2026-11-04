@@ -494,13 +494,13 @@ dd {
     "desc desc desc"
     "chips chips chips";
   align-items: center;
-  gap: 16px 20px;
-  padding-block: 40px;
+  gap: 10px 20px;
+  padding-block: 46px; /* 줄 간격을 줄인 만큼 늘려 카드 높이는 그대로 */
 }
 
 /* 장면 모드: 3개가 1440x900 한 화면에 들어가도록 압축 */
 .js .project {
-  padding-block: 24px;
+  padding-block: 30px;
 }
 
 .project-num {
@@ -525,16 +525,11 @@ dd {
   font-size: 13px;
 }
 
-/* 카드 전체를 GitHub 링크로. Live 링크를 안에 두려고 <a>로 감싸지 않음 */
+/* 카드 전체를 하나의 링크로 */
 .project-cover::after {
   content: "";
   position: absolute;
   inset: 0;
-}
-
-.project-live {
-  position: relative; /* 카드 전체 링크 위로 올림 */
-  transition: transform 0.2s ease;
 }
 
 /* transform은 .project-cover에 주면 ::after의 기준이 바뀌므로 안쪽 span에 줌 */
@@ -803,7 +798,6 @@ html:not(.js) .contact {
   .email:hover,
   .project:hover .project-title,
   .project-cover:hover,
-  .project-live:hover,
   .log a:hover code {
     color: var(--accent-text);
   }
@@ -812,8 +806,7 @@ html:not(.js) .contact {
     color: var(--accent-strong);
   }
 
-  .project:hover .project-link,
-  .project:hover .project-live {
+  .project:hover .project-link {
     transform: translate(3px, -3px);
   }
 }
@@ -903,8 +896,8 @@ html:not(.js) .contact {
       "title title"
       "desc desc"
       "chips chips";
-    gap: 12px;
-    padding-block: 28px;
+    gap: 8px 12px;
+    padding-block: 34px;
   }
   .project .chips li { padding: 7px 12px; }
 
@@ -928,7 +921,7 @@ html:not(.js) .contact {
   .js .scene-inner { padding-block: 84px 40px; }
   .js .section { row-gap: 24px; }
   .js .section .content { gap: 32px; }
-  .js .project { padding-block: 20px; }
+  .js .project { padding-block: 26px; }
   .js .contact .scene-inner { padding-bottom: 24px; }
 
   .footer {
